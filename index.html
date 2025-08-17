@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VPN Сервис - Mini App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      background: #101020;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: -120px; left: -100px;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle at 60% 40%, #aa6aff 60%, transparent 90%);
+      filter: blur(40px);
+      opacity: 0.8;
+      z-index: 0;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; right: -90px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle at 40% 60%, #620ac3 55%, transparent 92%);
+      filter: blur(44px);
+      opacity: 0.8;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .container { position: relative; z-index: 1; }
+
+    .tabs {
+      display: flex; border-bottom: 2px solid #32044c;
+      box-shadow: 0 3px 24px #3e065f66;
+    }
+    .tab {
+      flex: 1; text-align: center; padding: 16px 0;
+      cursor: pointer; background: #181828;
+      transition: background 0.3s, color 0.2s, box-shadow 0.2s;
+      color: #bebcff; font-weight: 500; letter-spacing: 1px;
+      border-bottom: 3px solid transparent;
+      box-shadow: 0 1px 15px 0 #5703c880 inset;
+      position: relative;
+      z-index: 2;
+    }
+    .tab:not(.active):hover {
+      background: #1c1437;
+      color: #d3a4ff;
+    }
+    .tab.active {
+      background: #2d1559;
+      color: #f8e0ff;
+      border-bottom: 3px solid #b97fff;
+      box-shadow: 0 0 18px #aa6aff77, 0 2px 28px 0 #620ac344 inset;
+      animation: tabGlow 0.5s;
+    }
+    @keyframes tabGlow {
+      from { box-shadow: 0 0 0 #aa6aff00; }
+      to   { box-shadow: 0 0 18px #aa6aff77, 0 2px 28px 0 #620ac344 inset;}
+    }
+    .tab-content {
+      padding: 22px;
+      background: rgba(13,9,26,0.94);
+      min-height: 240px;
+      border-radius: 0 0 14px 14px;
+      box-shadow: 0 4px 48px #5607c63e, 0 1.5px 0 #3a0a54;
+      color: #e6dfff;
+      margin-bottom: 36px;
+      opacity: 0;
+      transform: translateY(25px) scale(0.98);
+      pointer-events: none;
+      transition: opacity 0.7s cubic-bezier(.44,.18,.29,1.03), 
+                  transform 0.7s cubic-bezier(.44,.18,.29,1.03);
+      position: absolute;
+      width: 100%;
+      left: 0;
+      z-index: 2;
+    }
+    .tab-content.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+      position: relative;
+      animation: fadeIn 0.65s;
+    }
+    @keyframes fadeIn {
+      0%   { opacity:0; transform: translateY(30px) scale(0.96);}
+      80%  { opacity: 1; }
+      100% { opacity: 1; transform: translateY(0) scale(1);}
+    }
+    .tutorial-img {
+      max-width: 100%; margin: 16px 0; border-radius: 12px;
+      box-shadow: 0 2px 28px #9517ff35, 0 1px 8px #5607c64a;
+      border: 2px solid #6711e5;
+      transition: box-shadow 0.4s;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      opacity: 0.95;
+    }
+    .tutorial-img:hover {
+      box-shadow: 0 6px 48px #cc80ff66, 0 1px 18px #b67afd90;
+      opacity: 1;
+    }
+    .button {
+      background: linear-gradient(90deg, #c453fa 15%, #7301ff 100%);
+      color: #fff; padding: 14px 22px; border: none; border-radius: 6px;
+      cursor: pointer; font-size: 1.07rem; text-decoration: none; display: inline-block;
+      margin-top: 15px; font-weight: bold; letter-spacing: 0.5px;
+      box-shadow: 0 2px 24px #930cf7aa, 0 1.5px 0 #6706b4;
+      transition: background 0.18s, transform 0.17s, box-shadow 0.17s;
+      text-shadow: 0 0 13px #b775ff66;
+      position: relative;
+      z-index: 2;
+      filter: brightness(1.06) drop-shadow(0 0 11px #9b4cff99);
+      animation: buttonGlow 2.2s infinite alternate;
+    }
+    .button:hover {
+      background: linear-gradient(90deg, #f1d1ff 40%, #aa45ff 100%);
+      color: #2c024a; transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 48px #d88cff66, 0 2.5px 0 #5408a4;
+      filter: brightness(1.15) drop-shadow(0 0 20px #c558ffd7);
+    }
+    @keyframes buttonGlow {
+      0%   { box-shadow: 0 2px 24px #930cf7aa, 0 1.5px 0 #6706b4; }
+      70%  { box-shadow: 0 0px 32px #b887ffdd, 0 2px 12px #d18fff70; }
+      100% { box-shadow: 0 6px 54px #f3d9ffb3, 0 2.5px 0 #9408f4; }
+    }
+    .section-title {
+      font-size: 1.22rem; margin: 3px 0 15px;
+      text-shadow: 0 0 12px #c592ff20, 0 0 28px #b992f544;
+      color: #c3a7ee;
+      letter-spacing: 1.2px;
+      transition: color 0.2s;
+    }
+    .support-note {
+      font-size: 1rem;
+      color: #bf9eff;
+      background: rgba(80,0,128,0.11);
+      border-left: 3px solid #9f50f9;
+      padding: 10px 0 10px 16px;
+      margin-top: 24px;
+      margin-bottom: 2px;
+      border-radius: 7px 0 0 7px;
+      box-shadow: 0 2px 14px #7800ad1a;
+      text-shadow: 0 0 6px #2e1841cc;
+      animation: fadeInSupport 1.8s;
+    }
+    .support-link {
+      color: #e0bbff;
+      text-decoration: underline;
+      font-weight: bold;
+      transition: color 0.16s;
+    }
+    .support-link:hover {
+      color: #fff;
+      text-shadow: 0 0 8px #ad77ff;
+    }
+    ol, li {
+      color: #f3eeff;
+    }
+    @media (max-width: 600px) {
+      .tab-content { padding: 12px; }
+      .tab { padding: 11px 0; font-size: 0.99rem; }
+    }
+    @keyframes fadeInSupport {
+      from { opacity: 0; filter: blur(3px);}
+      to   { opacity: 1; filter: blur(0);}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab(0)">Главная</div>
+      <div class="tab" onclick="showTab(1)">Стать клиентом</div>
+      <div class="tab" onclick="showTab(2)">Установка</div>
+    </div>
+    
+    <div class="tab-content active" id="tab0">
+      <div class="section-title">Добро пожаловать в VPN‑сервис!</div>
+      <p>Погрузись в атмосферу свободы и безопасности с нашим VPN.<br>
+      Мгновенный доступ ко всему интернету, неоновый стиль и абсолютная анонимность.<br><br>
+      <b>Тёмный неон, максимум удобства и никаких ограничений.</b></p>
+      <div class="support-note">
+        Поддержка: <a href="https://t.me/AdamanT0192" target="_blank" class="support-link">@AdamanT0192</a>
+      </div>
+    </div>
+    
+    <div class="tab-content" id="tab1">
+      <div class="section-title">Как стать клиентом?</div>
+      <p>Готов открыть для себя приватный интернет? Заполни короткую анкету — мы оперативно активируем твой VPN‑доступ.</p>
+      <a href="ВАША_ССЫЛКА_НА_ГУГЛ_ФОРМУ" target="_blank" class="button">Заполнить форму</a>
+      <div class="support-note">
+        По вопросам — <a href="https://t.me/AdamanT0192" target="_blank" class="support-link">@AdamanT0192</a>
+      </div>
+    </div>
+    
+    <div class="tab-content" id="tab2">
+      <div class="section-title">Туториал: установка VPN</div>
+      <p>Инструкция для быстрого старта:</p>
+      <ol>
+        <li>Скачай нужное приложение для своей платформы:</li>
+        <img class="tutorial-img" src="ССЫЛКА_НА_ПЕРВОЕ_ИЗОБРАЖЕНИЕ" alt="Шаг 1">
+        <li>Открой приложение и введи полученные данные:</li>
+        <img class="tutorial-img" src="ССЫЛКА_НА_ВТОРОЕ_ИЗОБРАЖЕНИЕ" alt="Шаг 2">
+        <li>Нажми <b>«Подключиться»</b> и начни пользоваться интернетом без ограничений:</li>
+        <img class="tutorial-img" src="ССЫЛКА_НА_ТРЕТЬЕ_ИЗОБРАЖЕНИЕ" alt="Шаг 3">
+      </ol>
+      <div class="support-note">
+        Остались вопросы? Пиши в поддержку: <a href="https://t.me/AdamanT0192" target="_blank" class="support-link">@AdamanT0192</a>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let currentTab = 0;
+    function showTab(n) {
+      for(let i=0; i<3; i++) {
+        const tabContent = document.getElementById('tab'+i);
+        const tabButton = document.getElementsByClassName('tab')[i];
+        if(i === n) {
+          tabContent.classList.add('active');
+          tabButton.classList.add('active');
+        } else {
+          tabContent.classList.remove('active');
+          tabButton.classList.remove('active');
+        }
+      }
+      currentTab = n;
+      // авто скролл к началу контента
+      if(n === 2) window.scrollTo({top:0, behavior:"smooth"});
+    }
+    // Интеграция с Telegram WebApp API (темы, авторасширение)
+    if(window.Telegram && Telegram.WebApp) {
+      Telegram.WebApp.expand();
+    }
+  </script>
+</body>
+</html>
