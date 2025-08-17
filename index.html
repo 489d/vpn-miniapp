@@ -2,76 +2,94 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
   <title>VPN Сервис - Mini App</title>
   <style>
+    :root {
+      --main-bg: #101020;
+      --card-bg: rgba(17, 10, 26, 0.96);
+      --violet: #aa6aff;
+      --violet-dark: #620ac3;
+      --neon-shadow: 0 0 24px #a847ff88, 0 2px 24px #6e39ff33 inset;
+      --container-width: 420px;
+    }
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--main-bg);
       margin: 0;
-      background: #101020;
       min-height: 100vh;
       position: relative;
       overflow-x: hidden;
     }
-    body::before {
+    .main-container {
+      position: relative;
+      z-index: 1;
+      max-width: var(--container-width);
+      margin: 38px auto 12px auto;
+      background: none;
+      border-radius: 14px;
+      box-shadow: none;
+      padding: 0 0 12px 0;
+    }
+    body::before, body::after {
       content: '';
-      position: absolute;
+      position: fixed;
+      z-index: 0;
+      pointer-events: none;
+    }
+    body::before {
       top: -120px; left: -100px;
       width: 320px; height: 320px;
-      background: radial-gradient(circle at 60% 40%, #aa6aff 60%, transparent 90%);
-      filter: blur(40px);
-      opacity: 0.8;
-      z-index: 0;
-      pointer-events: none;
+      background: radial-gradient(circle at 60% 40%, var(--violet) 60%, transparent 90%);
+      filter: blur(48px); opacity: 0.70;
     }
     body::after {
-      content: '';
-      position: absolute;
-      bottom: -80px; right: -90px;
-      width: 280px; height: 280px;
-      background: radial-gradient(circle at 40% 60%, #620ac3 55%, transparent 92%);
-      filter: blur(44px);
-      opacity: 0.8;
-      z-index: 0;
-      pointer-events: none;
+      bottom: -90px; right: -120px;
+      width: 290px; height: 290px;
+      background: radial-gradient(circle at 40% 60%, var(--violet-dark) 67%, transparent 95%);
+      filter: blur(40px); opacity: 0.75;
     }
-    .container { position: relative; z-index: 1; }
-
     .tabs {
       display: flex; border-bottom: 2px solid #32044c;
-      box-shadow: 0 3px 24px #3e065f66;
+      box-shadow: 0 3px 24px #3e065f66; overflow: hidden;
+      border-radius: 14px 14px 0 0;
+      background: #1a1624;
     }
     .tab {
-      flex: 1; text-align: center; padding: 16px 0;
-      cursor: pointer; background: #181828;
-      transition: background 0.3s, color 0.2s, box-shadow 0.2s;
-      color: #bebcff; font-weight: 500; letter-spacing: 1px;
+      flex: 1;
+      text-align: center;
+      padding: 18px 0;
+      cursor: pointer;
+      background: #181828;
+      color: #bebcff;
+      font-weight: 500; letter-spacing: 1px;
       border-bottom: 3px solid transparent;
-      box-shadow: 0 1px 15px 0 #5703c880 inset;
-      position: relative;
-      z-index: 2;
+      transition: background 0.27s, color 0.21s, box-shadow 0.2s;
+      font-size: 1.06rem;
+      outline: none;
+      user-select: none;
+      touch-action: manipulation;
     }
-    .tab:not(.active):hover {
-      background: #1c1437;
+    .tab:not(.active):hover, .tab:not(.active):focus {
+      background: #20103a;
       color: #d3a4ff;
     }
     .tab.active {
       background: #2d1559;
       color: #f8e0ff;
       border-bottom: 3px solid #b97fff;
-      box-shadow: 0 0 18px #aa6aff77, 0 2px 28px 0 #620ac344 inset;
-      animation: tabGlow 0.5s;
+      box-shadow: var(--neon-shadow);
+      animation: tabGlow 0.6s;
     }
     @keyframes tabGlow {
-      from { box-shadow: 0 0 0 #aa6aff00; }
-      to   { box-shadow: 0 0 18px #aa6aff77, 0 2px 28px 0 #620ac344 inset;}
+      from { box-shadow: none; }
+      to   { box-shadow: var(--neon-shadow);}
     }
     .tab-content {
-      padding: 22px;
-      background: rgba(13,9,26,0.94);
+      background: var(--card-bg);
       min-height: 240px;
       border-radius: 0 0 14px 14px;
-      box-shadow: 0 4px 48px #5607c63e, 0 1.5px 0 #3a0a54;
+      box-shadow: 0 8px 40px #67068322;
       color: #e6dfff;
       margin-bottom: 36px;
       opacity: 0;
@@ -83,51 +101,36 @@
       width: 100%;
       left: 0;
       z-index: 2;
+      padding: 26px 34px 20px 34px;
+      font-size: 1.09rem;
+      line-height: 1.7;
     }
     .tab-content.active {
       opacity: 1;
       transform: translateY(0) scale(1);
       pointer-events: auto;
       position: relative;
-      animation: fadeIn 0.65s;
+      animation: fadeIn 0.41s;
     }
     @keyframes fadeIn {
       0%   { opacity:0; transform: translateY(30px) scale(0.96);}
-      80%  { opacity: 1; }
       100% { opacity: 1; transform: translateY(0) scale(1);}
-    }
-    .tutorial-img {
-      max-width: 100%; margin: 16px 0; border-radius: 12px;
-      box-shadow: 0 2px 28px #9517ff35, 0 1px 8px #5607c64a;
-      border: 2px solid #6711e5;
-      transition: box-shadow 0.4s;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      opacity: 0.95;
-    }
-    .tutorial-img:hover {
-      box-shadow: 0 6px 48px #cc80ff66, 0 1px 18px #b67afd90;
-      opacity: 1;
     }
     .button {
       background: linear-gradient(90deg, #c453fa 15%, #7301ff 100%);
-      color: #fff; padding: 14px 22px; border: none; border-radius: 6px;
-      cursor: pointer; font-size: 1.07rem; text-decoration: none; display: inline-block;
-      margin-top: 15px; font-weight: bold; letter-spacing: 0.5px;
+      color: #fff; padding: 15px 22px; border: none; border-radius: 7px;
+      cursor: pointer; font-size: 1.08rem; text-decoration: none; display: inline-block;
+      margin-top: 15px; font-weight: bold; letter-spacing: 0.6px;
       box-shadow: 0 2px 24px #930cf7aa, 0 1.5px 0 #6706b4;
-      transition: background 0.18s, transform 0.17s, box-shadow 0.17s;
+      transition: background 0.2s, transform 0.14s, box-shadow 0.14s;
       text-shadow: 0 0 13px #b775ff66;
-      position: relative;
-      z-index: 2;
+      outline: none;
       filter: brightness(1.06) drop-shadow(0 0 11px #9b4cff99);
       animation: buttonGlow 2.2s infinite alternate;
+      min-width: 200px; text-align: center;
     }
-    .button:hover {
-      background: linear-gradient(90deg, #f1d1ff 40%, #aa45ff 100%);
-      color: #2c024a; transform: translateY(-2px) scale(1.04);
-      box-shadow: 0 6px 48px #d88cff66, 0 2.5px 0 #5408a4;
-      filter: brightness(1.15) drop-shadow(0 0 20px #c558ffd7);
+    .button:active {
+      transform: scale(0.96);
     }
     @keyframes buttonGlow {
       0%   { box-shadow: 0 2px 24px #930cf7aa, 0 1.5px 0 #6706b4; }
@@ -144,21 +147,21 @@
     .support-note {
       font-size: 1rem;
       color: #bf9eff;
-      background: rgba(80,0,128,0.11);
+      background: rgba(80,0,128,0.13);
       border-left: 3px solid #9f50f9;
-      padding: 10px 0 10px 16px;
-      margin-top: 24px;
+      padding: 8px 0 8px 12px;
+      margin-top: 26px;
       margin-bottom: 2px;
       border-radius: 7px 0 0 7px;
-      box-shadow: 0 2px 14px #7800ad1a;
-      text-shadow: 0 0 6px #2e1841cc;
-      animation: fadeInSupport 1.8s;
+      box-shadow: 0 2px 14px #7800ad18;
+      text-shadow: 0 0 6px #362651cc;
+      animation: fadeInSupport 1.2s;
     }
     .support-link {
       color: #e0bbff;
       text-decoration: underline;
       font-weight: bold;
-      transition: color 0.16s;
+      transition: color 0.12s;
     }
     .support-link:hover {
       color: #fff;
@@ -167,76 +170,133 @@
     ol, li {
       color: #f3eeff;
     }
-    @media (max-width: 600px) {
-      .tab-content { padding: 12px; }
-      .tab { padding: 11px 0; font-size: 0.99rem; }
+    ul.tutorial-links {
+      margin-top: 8px;
+      margin-bottom: 15px;
+      padding-left: 0;
+      list-style: none;
     }
-    @keyframes fadeInSupport {
-      from { opacity: 0; filter: blur(3px);}
-      to   { opacity: 1; filter: blur(0);}
+    ul.tutorial-links li {
+      margin-bottom: 8px;
+    }
+    ul.tutorial-links a {
+      color: #ceb3ff;
+      text-decoration: underline;
+      transition: color 0.15s;
+    }
+    ul.tutorial-links a:hover {
+      color: #fff;
+    }
+    .platform {
+      color: #e0b4ff;
+      font-weight: bold;
+      margin-top: 8px;
+      margin-bottom: 5px;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 700px) {
+      .main-container { max-width: 98vw; margin-top: 11px;}
+      .tab-content { padding: 16px 6vw 20px 6vw; font-size: 0.97rem; border-radius: 0 0 11px 11px;}
+      .section-title { font-size: 1.07rem; }
+      .tab { padding: 14px 0; font-size: 0.98rem; }
+      .button { min-width: 130px; font-size: 0.99rem;}
+    }
+    @media (max-width: 440px) {
+      .main-container { padding: 0; }
+      .tab-content { padding: 11px 3vw 14px 3vw;}
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="main-container">
     <div class="tabs">
-      <div class="tab active" onclick="showTab(0)">Главная</div>
-      <div class="tab" onclick="showTab(1)">Стать клиентом</div>
-      <div class="tab" onclick="showTab(2)">Установка</div>
+      <div class="tab active" onclick="showTab(0)" tabindex="0">Главная</div>
+      <div class="tab" onclick="showTab(1)" tabindex="0">Стать клиентом</div>
+      <div class="tab" onclick="showTab(2)" tabindex="0">Установка</div>
     </div>
     
     <div class="tab-content active" id="tab0">
-      <div class="section-title">Добро пожаловать в VPN‑сервис!</div>
-      <p>Погрузись в атмосферу свободы и безопасности с нашим VPN.<br>
-      Мгновенный доступ ко всему интернету, неоновый стиль и абсолютная анонимность.<br><br>
-      <b>Тёмный неон, максимум удобства и никаких ограничений.</b></p>
+      <div class="section-title">🌐 Быстрый и Надёжный VPN в Telegram!</div>
+      <ul>
+        <li>Забудьте про блокировки и ограничения — с нашим VPN вы получаете:</li>
+        <li>• <b>Полную анонимность</b> — ваши данные под защитой.</li>
+        <li>• <b>Высокую скорость</b> и стабильный доступ к любимым сайтам из любой точки мира.</li>
+        <li>• <b>Безлимитный трафик</b> по честной цене.</li>
+        <li>• <b>24/7 поддержка</b> — ваш комфорт наш приоритет!</li>
+      </ul>
+      <p>Подключитесь и почувствуйте свободу Интернета уже сейчас!</p>
       <div class="support-note">
         Поддержка: <a href="https://t.me/AdamanT0192" target="_blank" class="support-link">@AdamanT0192</a>
       </div>
     </div>
     
     <div class="tab-content" id="tab1">
-      <div class="section-title">Как стать клиентом?</div>
-      <p>Готов открыть для себя приватный интернет? Заполни короткую анкету — мы оперативно активируем твой VPN‑доступ.</p>
-      <a href="ВАША_ССЫЛКА_НА_ГУГЛ_ФОРМУ" target="_blank" class="button">Заполнить форму</a>
+      <div class="section-title">Стать клиентом</div>
+      <p>Заполните короткую анкету — мы быстро активируем для вас VPN-доступ.</p>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSe_yLeJnYJWsLIyGdqCAkset2dHsCCMFpm8IQ7ughnDkVJWmw/viewform?usp=header"
+        target="_blank" class="button">Заполнить форму</a>
       <div class="support-note">
         По вопросам — <a href="https://t.me/AdamanT0192" target="_blank" class="support-link">@AdamanT0192</a>
       </div>
     </div>
     
     <div class="tab-content" id="tab2">
-      <div class="section-title">Туториал: установка VPN</div>
-      <p>Инструкция для быстрого старта:</p>
+      <div class="section-title">Туториал по установке OpenVPN</div>
       <ol>
-        <li>Скачай нужное приложение для своей платформы:</li>
-        <img class="tutorial-img" src="ССЫЛКА_НА_ПЕРВОЕ_ИЗОБРАЖЕНИЕ" alt="Шаг 1">
-        <li>Открой приложение и введи полученные данные:</li>
-        <img class="tutorial-img" src="ССЫЛКА_НА_ВТОРОЕ_ИЗОБРАЖЕНИЕ" alt="Шаг 2">
-        <li>Нажми <b>«Подключиться»</b> и начни пользоваться интернетом без ограничений:</li>
-        <img class="tutorial-img" src="ССЫЛКА_НА_ТРЕТЬЕ_ИЗОБРАЖЕНИЕ" alt="Шаг 3">
+        <li>
+          <b>Скачайте клиент OpenVPN для вашей платформы:</b>
+          <ul class="tutorial-links">
+            <li><span class="platform">Windows:</span> <a href="https://openvpn.net/community-downloads/" target="_blank">Скачать</a></li>
+            <li><span class="platform">Android:</span> <a href="https://play.google.com/store/apps/details?id=net.openvpn.openvpn" target="_blank">Google Play</a></li>
+            <li><span class="platform">iOS:</span> <a href="https://apps.apple.com/ru/app/openvpn-connect/id590379981" target="_blank">App Store</a></li>
+            <li><span class="platform">macOS:</span> <a href="https://openvpn.net/client-connect-vpn-for-mac-os/" target="_blank">Скачать</a></li>
+          </ul>
+        </li>
+        <li>
+          <b>Импортируйте профиль .ovpn:</b>
+          <ul>
+            <li><span class="platform">Windows:</span>
+              <ul>
+                <li>Откройте OpenVPN GUI, кликните правой кнопкой по иконке в трее &rarr; "Import file...", выберите ваш .ovpn, подтвердите.</li>
+                <li>Подключитесь, выбрав импортированный профиль в трее и нажав "Connect".</li>
+              </ul>
+            </li>
+            <li><span class="platform">Android:</span>
+              <ul>
+                <li>Запустите OpenVPN Connect &rarr; "File" &rarr; выберите .ovpn файл в проводнике.</li>
+                <li>Нажмите "ADD" и подтвердите.</li>
+                <li>Для подключения нажмите на профиль и «Connect».</li>
+              </ul>
+            </li>
+            <li><span class="platform">iOS:</span>
+              <ul>
+                <li>Откройте OpenVPN Connect &rarr; "File" &rarr; импортируйте .ovpn через “Files” или отправьте на устройство по почте/мессенджеру.</li>
+                <li>Нажмите "ADD" и «Connect».</li>
+              </ul>
+            </li>
+            <li><span class="platform">macOS:</span>
+              <ul>
+                <li>Откройте OpenVPN client, выберите "Import Profile", укажите .ovpn файл.</li>
+                <li>После импорта — выберите профиль, нажмите «Connect».</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><b>Пользуйтесь интернетом без ограничений!</b></li>
       </ol>
       <div class="support-note">
-        Остались вопросы? Пиши в поддержку: <a href="https://t.me/AdamanT0192" target="_blank" class="support-link">@AdamanT0192</a>
+        Остались вопросы? <a href="https://t.me/AdamanT0192" target="_blank" class="support-link">@AdamanT0192</a>
       </div>
     </div>
   </div>
   
   <script>
-    let currentTab = 0;
     function showTab(n) {
-      for(let i=0; i<3; i++) {
-        const tabContent = document.getElementById('tab'+i);
-        const tabButton = document.getElementsByClassName('tab')[i];
-        if(i === n) {
-          tabContent.classList.add('active');
-          tabButton.classList.add('active');
-        } else {
-          tabContent.classList.remove('active');
-          tabButton.classList.remove('active');
-        }
+      for(let i=0;i<3;i++) {
+        document.getElementById('tab'+i).classList.toggle('active', i === n);
+        document.getElementsByClassName('tab')[i].classList.toggle('active', i === n);
       }
-      currentTab = n;
-      // авто скролл к началу контента
       if(n === 2) window.scrollTo({top:0, behavior:"smooth"});
     }
     // Интеграция с Telegram WebApp API (темы, авторасширение)
