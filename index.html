@@ -117,7 +117,7 @@
       transition:
         opacity 0.45s cubic-bezier(.44,.18,.29,1.03),
         transform 0.45s cubic-bezier(.44,.18,.29,1.03);
-      min-height: 350px; /* обеспечиваем минимальную высоту для вкладки с слайдером */
+      min-height: 350px;
     }
     .tab-content.active {
       opacity: 1;
@@ -131,7 +131,6 @@
       0% { opacity: 0; transform: translateX(40px); }
       100% { opacity: 1; transform: translateX(0); }
     }
-
     .button {
       background: linear-gradient(90deg, #c453fa 15%, #7301ff 100%);
       color: #fff; padding: 14px 22px; border: none; border-radius: 15px;
@@ -152,7 +151,6 @@
     .button:focus-visible {
       box-shadow: 0 0 15px #d59aff;
     }
-    /* Ripple effect */
     .button::after {
       content: "";
       position: absolute;
@@ -174,7 +172,6 @@
       transform: translate(-50%, -50%) scale(4);
       transition: 0s;
     }
-
     .section-title {
       font-size: 1.15rem; margin: 2px 0 13px;
       text-shadow: 0 0 9px #b792ef3f;
@@ -228,8 +225,6 @@
       margin-bottom: 4px;
       font-size: 1rem;
     }
-
-    /* Слайдер преимуществ */
     .slider-container {
       max-width: 390px;
       margin: 22px auto 0 auto;
@@ -305,9 +300,151 @@
       .main-container { padding: 0; }
       .tab-content { border-radius: 0 0 12px 12px;}
     }
+
+    /* ---- Экран инструкции ---- */
+    #instruction-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(10, 5, 25, 0.96);
+      backdrop-filter: blur(8px);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: left;
+      color: #eee;
+      padding: 30px 20px;
+      box-sizing: border-box;
+    }
+    #instruction-screen h2 {
+      font-size: 24px;
+      color: var(--violet);
+      text-shadow: 0 0 10px #a86fff77;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    #instruction-screen ul {
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    #instruction-screen p {
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+    #instruction-screen button {
+      width: 100%;
+      max-width: 280px;
+      padding: 12px 20px;
+      background: linear-gradient(90deg,#c453fa 15%,#7301ff 100%);
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      margin-top: 12px;
+      box-shadow: 0 0 18px #8b3dff88;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: 0.2s;
+    }
+    #instruction-screen button:hover {
+      filter: brightness(1.15);
+    }
+
+    /* ---- Модальное окно политики ---- */
+    #privacy-modal {
+      display: none;
+      position: fixed;
+      z-index: 10001;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.64);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      text-align: left;
+    }
+    #privacy-modal > div {
+      background: #1e142e;
+      color: #fff;
+      padding: 24px 18px 16px 18px;
+      border-radius: 18px;
+      max-width: 340px;
+      margin: auto;
+      box-shadow: 0 4px 32px #37078655;
+      position: relative;
+    }
+    #privacy-modal h3 {
+      margin-top: 0;
+      color: #aa6aff;
+    }
+    #privacy-modal div > div {
+      font-size: 15px;
+      line-height: 1.6;
+      max-height: 44vh;
+      overflow-y: auto;
+    }
+    #privacy-modal button {
+      margin-top: 15px;
+      padding: 10px 0;
+      width: 100%;
+      background: #aa6aff;
+      color: #222;
+      border: none;
+      border-radius: 9px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    #privacy-modal span {
+      position: absolute;
+      top: 7px;
+      right: 17px;
+      font-size: 26px;
+      cursor: pointer;
+      color: #aa6aff;
+    }
+    #privacy-modal span:hover,
+    #privacy-modal button:hover {
+      filter: brightness(1.2);
+    }
+
+    /* Политика в футере */
+    .privacy-link-container {
+      margin: 8px 0 22px 0;
+      text-align: center;
+      font-size: 13px;
+      color: #aaa;
+    }
+    .privacy-link-container a {
+      color: #b97fff;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .privacy-link-container a:hover {
+      color: #d1aaff;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Экран-инструкция -->
+  <div id="instruction-screen">
+    <h2>🌐 Инструкция по использованию бота</h2>
+    <p>После запуска в Telegram вы увидите приложение с такими разделами:</p>
+    <ul>
+      <li><b>Главная</b> — информация о VPN.</li>
+      <li><b>Стать клиентом</b> — анкета для подключения (с вами свяжется @AdamanT0192).</li>
+      <li><b>Установка</b> — подробный гайд по OpenVPN.</li>
+      <li><b>FAQ</b> — частые вопросы и ответы.</li>
+      <li><b>Преимущества</b> — основные плюсы сервиса.</li>
+    </ul>
+    <button id="accept-instruction">✅ Я прочитал</button>
+  </div>
+
   <div class="main-container">
     <div class="tabs">
       <div class="tab active" onclick="showTab(0)" tabindex="0">Главная</div>
@@ -316,7 +453,6 @@
       <div class="tab" onclick="showTab(3)" tabindex="0">FAQ</div>
       <div class="tab" onclick="showTab(4)" tabindex="0">Преимущества</div>
     </div>
-
     <div class="tab-content active" id="tab0">
       <div class="section-title">🌐 Быстрый и Надёжный VPN в Telegram!</div>
       <ul>
@@ -330,18 +466,21 @@
       <div class="support-note">
         Поддержка: <a href="https://t.me/AdamanT0192" target="_blank" class="support-link">💬 @AdamanT0192</a>
       </div>
+      <div class="privacy-link-container">
+        <a href="javascript:void(0)" onclick="document.getElementById('privacy-modal').style.display='flex'">Политика приватности</a>
+      </div>
     </div>
-
     <div class="tab-content" id="tab1">
       <div class="section-title">Стать клиентом</div>
       <p>Заполните короткую анкету — мы быстро активируем для вас VPN-доступ.</p>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSe_yLeJnYJWsLIyGdqCAkset2dHsCCMFpm8IQ7ughnDkVJWmw/viewform?usp=header"
-        target="_blank" class="button">Заполнить форму</a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSe_yLeJnYJWsLIyGdqCAkset2dHsCCMFpm8IQ7ughnDkVJWmw/viewform?usp=header" target="_blank" class="button">Заполнить форму</a>
       <div class="support-note">
         По вопросам — <a href="https://t.me/AdamanT0192" target="_blank" class="support-link">💬 @AdamanT0192</a>
       </div>
+      <div class="privacy-link-container">
+        <a href="javascript:void(0)" onclick="document.getElementById('privacy-modal').style.display='flex'">Политика приватности</a>
+      </div>
     </div>
-
     <div class="tab-content" id="tab2">
       <div class="section-title">Туториал по установке OpenVPN</div>
       <ol>
@@ -389,8 +528,10 @@
       <div class="support-note">
         Остались вопросы? <a href="https://t.me/AdamanT0192" target="_blank" class="support-link">💬 @AdamanT0192</a>
       </div>
+      <div class="privacy-link-container">
+        <a href="javascript:void(0)" onclick="document.getElementById('privacy-modal').style.display='flex'">Политика приватности</a>
+      </div>
     </div>
-
     <div class="tab-content" id="tab3">
       <div class="section-title">Частые вопросы (FAQ)</div>
       <ul>
@@ -409,8 +550,10 @@
           Да! Один аккаунт можно использовать на телефоне и ПК одновременно — для вашего удобства и свободы.
         </li>
       </ul>
+      <div class="privacy-link-container">
+        <a href="javascript:void(0)" onclick="document.getElementById('privacy-modal').style.display='flex'">Политика приватности</a>
+      </div>
     </div>
-
     <div class="tab-content" id="tab4">
       <div class="section-title">Почему выбирают нас?</div>
       <div class="slider-container">
@@ -427,7 +570,27 @@
       </div>
     </div>
   </div>
+
+  <!-- Модальное окно политики приватности -->
+  <div id="privacy-modal">
+    <div>
+      <h3>Политика приватности</h3>
+      <div>
+        <p>Ваши персональные данные не передаются третьим лицам и используются исключительно для предоставления услуг VPN и обратной связи по вашему запросу.</p>
+        <p>Мы не сохраняем ваши логи соединений и не отслеживаем действия в интернете. Подробнее по вопросам безопасности:<br>
+        <b>Поддержка:</b> <a href="https://t.me/AdamanT0192" style="color:#b97fff"> @AdamanT0192</a></p>
+        <ul>
+          <li>Использование localStorage — только для улучшения удобства внутри приложения.</li>
+          <li>Вы можете очистить все локальные данные в любой момент через настройки браузера.</li>
+        </ul>
+      </div>
+      <button onclick="document.getElementById('privacy-modal').style.display='none'">OK</button>
+      <span onclick="document.getElementById('privacy-modal').style.display='none'">&times;</span>
+    </div>
+  </div>
+
   <script>
+    // управление табами
     function showTab(n) {
       for(let i=0;i<5;i++) {
         const tabContent = document.getElementById('tab'+i);
@@ -456,8 +619,53 @@
     }
     function nextSlide() { showSlide(currentSlide + 1); }
     function prevSlide() { showSlide(currentSlide - 1); }
-    // Инициализация
     showSlide(currentSlide);
+
+    // Управление экраном инструкции
+    const instructionScreen = document.getElementById("instruction-screen");
+    const acceptBtn = document.getElementById("accept-instruction");
+    const mainContainer = document.querySelector(".main-container");
+
+    if (localStorage.getItem("instructionRead") === "true") {
+      instructionScreen.style.display = "none";
+    } else {
+      mainContainer.style.display = "none";
+      document.body.style.overflow = "hidden";
+    }
+
+    acceptBtn.addEventListener("click", () => {
+      instructionScreen.style.display = "none";
+      mainContainer.style.display = "block";
+      document.body.style.overflow = "";
+      localStorage.setItem("instructionRead", "true");
+    });
+
+    // Мини-кеширование FAQ и Установки
+    function cacheTabContent(tabId, storageKey) {
+      const tabEl = document.getElementById(tabId);
+      if (!localStorage.getItem(storageKey)) {
+        localStorage.setItem(storageKey, tabEl.innerHTML);
+      }
+    }
+    function showFromCache(tabId, storageKey) {
+      const tabEl = document.getElementById(tabId);
+      if (localStorage.getItem(storageKey)) {
+        tabEl.innerHTML = localStorage.getItem(storageKey);
+      }
+    }
+    document.querySelectorAll('.tab').forEach((tab, idx) => {
+      tab.addEventListener('click', () => {
+        if(tab.textContent.trim() === 'FAQ') {
+          cacheTabContent('tab3', 'faqCache');
+          showFromCache('tab3', 'faqCache');
+        }
+        if(tab.textContent.trim() === 'Установка') {
+          cacheTabContent('tab2', 'setupCache');
+          showFromCache('tab2', 'setupCache');
+        }
+      });
+    });
   </script>
+
 </body>
 </html>
